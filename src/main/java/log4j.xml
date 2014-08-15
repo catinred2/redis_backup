@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="DEBUG" />
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+
+	<!-- <appender name="remoteLog" class="org.apache.log4j.net.SocketAppender">
+	    <param name="RemoteHost" value="192.168.1.30"/>
+  		<param name="Port" value="5555"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS}$$$[%l]$$$[%p]$$$%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+	 -->
+	<appender name="debugFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/debug.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-debug.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<!--
+				<param name="ConversionPattern" value="%d{yyyy-M-d HH:mm:ss} %p
+				(%l)- %m%n" />
+			-->
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="DEBUG" />
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+
+	<appender name="warnFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/warn.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-warn.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="WARN" />
+			<param name="LevelMin" value="WARN" />
+		</filter>
+	</appender>
+
+	<appender name="infoFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/info.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-info.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="INFO" />
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+
+	<appender name="errorFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/error.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="ERROR" />
+		</filter>
+	</appender>
+	<appender name="AllFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/all.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+	<appender name="SystemCallingFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/systemcall.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}$$$%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="INFO" />
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	<appender name="Json" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/json.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss}$$$%m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="INFO" />
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	
+	<appender name="RedisFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/redis.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n"  />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="INFO" />
+			<param name="LevelMin" value="INFO" />
+		</filter>
+	</appender>
+	<appender name="TimerJobFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="logs/timer.log" />
+		<!-- <param name="File" value="/home/ming/proj/doomrush_dev/3kingdom-error.log" /> -->
+		<param name="Append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} [%l]-[%p] %m%n"  />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="DEBUG" />
+			<param name="LevelMin" value="DEBUG" />
+		</filter>
+	</appender>
+	<appender name="counterFile" class="org.apache.log4j.DailyRollingFileAppender">
+<!--            <param name="File" value="d:/log/counter.log" />  -->
+                <param name="File" value="/data/caronline/counter.log" />
+                <param name="Append" value="true" />
+                <param name="encoding" value="UTF-8" />
+                <layout class="org.apache.log4j.PatternLayout">
+                        <!--
+                                <param name="ConversionPattern" value="%d{yyyy-M-d HH:mm:ss} %p
+                                (%c:%L)- %m%n" />
+                        -->
+                        <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %m%n" />
+                </layout>
+                <filter class="org.apache.log4j.varia.LevelRangeFilter">
+                        <param name="LevelMax" value="INFO" />
+                        <param name="LevelMin" value="INFO" />
+                </filter>
+        </appender>
+	
+	<logger name="org.apache.struts2">
+		<level value="error" />
+	</logger>
+	
+	<logger name="org.springframework">
+        <level value="error"/>
+    </logger>
+    
+    <logger name="com.google">
+        <level value="error"/>
+    </logger>
+    
+    <logger name="com.opensymphony.xwork2">
+        <level value="error"/>
+    </logger>
+    
+    <logger name="com.jaj.kingdom">
+		<level value="error"/>
+	</logger>
+	<logger name="com.mosun">
+		<level value="debug"/>
+	</logger>
+	<logger name="systemcall">
+		<level value="info"/>
+		<appender-ref ref="SystemCallingFile" />
+		<!-- <appender-ref ref="remoteLog" /> -->
+	</logger>
+	<logger name="json">
+		<level value="info"/>
+		<appender-ref ref="Json" />
+		<!-- <appender-ref ref="remoteLog" /> -->
+	</logger>
+	<logger name="redis">
+		<level value="info"/>
+		<appender-ref ref="RedisFile" />
+		
+	</logger>
+	<logger name="timerjob">
+		<level value="debug"/>
+		<appender-ref ref="TimerJobFile" />
+		
+	</logger>
+	<logger name="counter">
+                <level value="info"/>
+                <appender-ref ref="CONSOLE" />
+                <appender-ref ref="counterFile" />
+</logger>
+	<root>
+		<level value="ERROR" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="AllFile" />
+		<appender-ref ref="debugFile" />
+		<appender-ref ref="warnFile" />
+		<appender-ref ref="infoFile" />
+		<appender-ref ref="errorFile" />
+		
+	</root>
+
+</log4j:configuration>
