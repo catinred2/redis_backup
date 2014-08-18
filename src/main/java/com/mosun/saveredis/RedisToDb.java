@@ -81,6 +81,7 @@ public class RedisToDb implements Runnable{
 					value = JsonUtil.getInstance().writeValue(set);
 					break;
 				default:
+					value=null;
 					break;
 				}
 				if (value!=null && !value.isEmpty()){
@@ -96,6 +97,9 @@ public class RedisToDb implements Runnable{
 //					}
 				}else{
 					//delete from db??
+					if (type.equals("none")){
+						db.del(key);
+					}
 				}
 				
 			} catch (InterruptedException e) {
