@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class KeyQueue {
 	private static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
-
+	public final static String MAGIC_WORD = "NEED_QUIT";
 	public static void Put(String str) throws InterruptedException{
 		queue.put(str);
 	}

@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import redis.clients.jedis.exceptions.JedisConnectionException;
+
 import com.mosun.saveredis.util.*;
 
 
@@ -33,7 +35,12 @@ public class Monitor implements Runnable{
 		while(true){
 			//String msg = ris.readLine();
 			//System.out.println(msg);
-			List<Object> obj = (List<Object>)Protocol.read(ris);
+			List<Object> obj = null;
+			obj = (List<Object>)Protocol.read(ris);
+			
+			if (obj==null){
+				continue;
+			}
 			if (obj.size()==3){
 				logger.debug("subscribe ok");
 			}
@@ -44,7 +51,7 @@ public class Monitor implements Runnable{
 					continue;
 				}
 				try {
-					logger.debug("put queue:" + System.currentTimeMillis());
+					//logger.debug("put queue:" + System.currentTimeMillis());
 					KeyQueue.Put(response.get(3));
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

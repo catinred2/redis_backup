@@ -45,6 +45,32 @@ public class MainProc {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println( "Hello World!" );
+		Runtime.getRuntime().addShutdownHook(new Thread(){
+    		public void run(){
+    			
+    			try {
+					socket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+    			
+    			
+    			try {
+					KeyQueue.Put(KeyQueue.MAGIC_WORD);
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	});
 		//networkInit();
 		try {
 			socketInit();

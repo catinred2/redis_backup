@@ -56,7 +56,9 @@ public class RedisToDb implements Runnable{
 			String key;
 			try {
 				key = KeyQueue.Take();
-				
+				if (KeyQueue.MAGIC_WORD.equals(key)){
+					break;
+				}
 				String type = j.type(key);
 				switch (type){
 				case "string":
@@ -84,7 +86,7 @@ public class RedisToDb implements Runnable{
 				if (value!=null && !value.isEmpty()){
 					// save to db
 					//count++;
-					logger.debug(String.format("key=%s value=%s",key, value));
+					logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type, value));
 					//take_time = System.currentTimeMillis();
 					db.write(key, value);
 //					finish_time = System.currentTimeMillis();
@@ -103,8 +105,11 @@ public class RedisToDb implements Runnable{
 			}
 			
 		}
+		logger.debug("ok,quit now.");
 		db.close();
 		db = null;
+		j.close();
+		j=null;
 	}
 	
 	public void run1() {
