@@ -34,7 +34,7 @@ public class MainProc {
 	private static EventLoopGroup bossGroup=null;
 	private static EventLoopGroup workerGroup=null;
 	private static ServerBootstrap bootstrap=null;
-	private static int port = 9001;
+	private static int port = 7789;
 	private static Socket socket=null;
 	private static RedisInputStream ris;
 	private static RedisOutputStream ros;
@@ -47,6 +47,8 @@ public class MainProc {
 		System.out.println( "Hello World!" );
 		Runtime.getRuntime().addShutdownHook(new Thread(){
     		public void run(){
+    			workerGroup.shutdownGracefully();
+    			bossGroup.shutdownGracefully();
     			
     			try {
 					socket.close();
@@ -71,7 +73,15 @@ public class MainProc {
 				}
     		}
     	});
-		//networkInit();
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				networkInit();
+			}
+		}).start();
+		
 		try {
 			socketInit();
 			new Thread(new RedisToDb()).start();
@@ -109,10 +119,10 @@ public class MainProc {
              .option(ChannelOption.SO_KEEPALIVE, true)
              .handler(new LoggingHandler(LogLevel.INFO))
              .childHandler(new ServerInitializer());
-
             // Start the server.
             ChannelFuture f = bootstrap.bind(port).sync();
             System.out.println("starting the server on port:" + port);
+            
             // Wait until the server socket is closed.
             f.channel().closeFuture().sync();
         }catch (Exception e) {

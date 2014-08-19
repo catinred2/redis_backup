@@ -34,7 +34,7 @@ public class RedisConfig {
 			}
 		}
 	}
-	public static String getConfigProperty(String key){
+	private static String getConfigProperty(String key){
 		return RedisConfig.getInstance().appSettings.getProperty(key);
 	}
 	public static String getHost(){
@@ -42,5 +42,8 @@ public class RedisConfig {
 	}
 	public static int getPort(){
 		return Integer.parseInt(getConfigProperty("redis.port"));
+	}
+	public static String getLevelDBFileName(){
+		return getConfigProperty("leveldb.filename");
 	}
 }

@@ -46,16 +46,11 @@ public class RedisToDb implements Runnable{
 		String value = null;
 		long take_time,finish_time,total_time=0;
 		int count=0;
-		Database db = new Database("./test.db");
-		try {
-			db.init();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			return;
-		}
+		
+		
 		while(flag){
 			String key;
+			String valueTypeString="";
 			try {
 				key = KeyQueue.Take();
 				if (KeyQueue.MAGIC_WORD.equals(key)){
@@ -65,22 +60,27 @@ public class RedisToDb implements Runnable{
 				switch (type){
 				case "string":
 					value = j.get(key);
+					valueTypeString = "S";
 					break;
 				case "hashmap":
 					Map<String, String> hashMap = j.hgetAll(key);
 					value = JsonUtil.getInstance().writeValue(hashMap);
+					valueTypeString = "H";
 					break;
 				case "list":
 					List<String> list = j.lrange(key, 0, -1);
 					value = JsonUtil.getInstance().writeValue(list);
+					valueTypeString = "L";
 					break;
 				case "zset":
 					Set<Tuple> zset = j.zrangeWithScores(key, 0, -1);
 					value = JsonUtil.getInstance().writeValue(zset);
+					valueTypeString = "Z";
 					break;
 				case "set":
 					Set<String> set = j.smembers(key);
 					value = JsonUtil.getInstance().writeValue(set);
+					valueTypeString = "T";
 					break;
 				default:
 					value=null;
@@ -91,7 +91,7 @@ public class RedisToDb implements Runnable{
 					//count++;
 					logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type, value));
 					//take_time = System.currentTimeMillis();
-					db.write(key, value);
+					Database.getInstance().write(key, valueTypeString + value);
 //					finish_time = System.currentTimeMillis();
 //					total_time = total_time + finish_time - take_time;
 //					if (count==10000){
@@ -101,7 +101,7 @@ public class RedisToDb implements Runnable{
 					//delete from db??
 					if (type.equals("none")){
 						logger.debug(String.format("DELETE key=%s",key));
-						db.del(key);
+						Database.getInstance().del(key);
 					}
 				}
 				
@@ -113,8 +113,8 @@ public class RedisToDb implements Runnable{
 			
 		}
 		logger.debug("ok,quit now.");
-		db.close();
-		db = null;
+		Database.getInstance().close();
+		
 		j.close();
 		j=null;
 	}

@@ -16,6 +16,8 @@ import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.iq80.leveldb.impl.Level;
 import org.iq80.leveldb.util.DbIterator;
 
+import com.mosun.saveredis.RedisConfig;
+
 /**
  * @Description: TODO
  * @author ming
@@ -26,15 +28,36 @@ public class Database {
 	private DB db = null;
 	private String filename = "";
 	private boolean initialized = false;
-	public Database(String _filename) {
-		this.filename = _filename;
-		
+	private Options options;
+	private static Database instance = null;
+	public static Database getInstance(){
+		if (instance==null){
+			synchronized (Database.class) {
+				if (instance==null){
+					instance = new Database(RedisConfig.getLevelDBFileName(), null);
+					try {
+						instance.init();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return instance;
 	}
-	public void init() throws IOException{
-		Options options = new Options();
-		options.createIfMissing(true);
-		options.writeBufferSize(256<<20);
-		db = factory.open(new File(filename), options);
+	private Database(String _filename,Options _options) {
+		this.filename = _filename;
+		options = _options;
+	}
+	private void init() throws IOException{
+		if (this.options==null){
+			this.options = new Options();
+			this.options.createIfMissing(true);
+			this.options.writeBufferSize(256<<20);
+		}
+		
+		db = factory.open(new File(filename), this.options);
 		initialized = true;
 		
 	}
@@ -74,17 +97,21 @@ public class Database {
 		db.delete(byteKey);
 	}
 	public void close(){
-		try {
-			if (db!=null){
-				db.close();
+		synchronized (Database.class) {
+			try {
+				if (db!=null){
+					db.close();
+				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+				db = null;
 			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			db = null;
+			instance = null;
 		}
+		
 	}
 	public DBIterator iterator(ReadOptions ro){
 		if (!initialized){
