@@ -50,6 +50,19 @@ public class Database {
 		db.put(byteKey, byteValue);
 		
 	}
+	public String read(String key){
+		if (!initialized){
+			return null;
+		}
+		if (key==null || key.isEmpty()){
+			return null;
+		}
+		byte[] byteKey = key.getBytes(StandardCharsets.UTF_8);
+		byte[] byteValue = db.get(byteKey);
+		if (byteValue==null) return null;
+		return new String(byteValue,StandardCharsets.UTF_8);
+		
+	}
 	public void del(String key){
 		if (!initialized){
 			return;

@@ -6,6 +6,8 @@ package com.mosun.saveredis;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,6 +100,7 @@ public class RedisToDb implements Runnable{
 				}else{
 					//delete from db??
 					if (type.equals("none")){
+						logger.debug(String.format("DELETE key=%s",key));
 						db.del(key);
 					}
 				}
