@@ -97,7 +97,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix></classpathPrefix>
-							<mainClass>com.mosun.netty.test.NettyClient</mainClass>
+							<mainClass>com.mosun.saveredis.MainProc</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
