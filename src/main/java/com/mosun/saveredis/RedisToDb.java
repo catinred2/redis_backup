@@ -62,7 +62,7 @@ public class RedisToDb implements Runnable{
 					value = j.get(key);
 					valueTypeString = "S";
 					break;
-				case "hashmap":
+				case "hash":
 					Map<String, String> hashMap = j.hgetAll(key);
 					value = JsonUtil.getInstance().writeValue(hashMap);
 					valueTypeString = "H";
