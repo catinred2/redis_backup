@@ -5,3 +5,4 @@ LICENSE
 /logs
 /test.db
 /target
+leveldb.db

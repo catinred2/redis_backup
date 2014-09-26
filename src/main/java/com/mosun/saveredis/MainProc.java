@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
+import com.mosun.saveredis.leveldb.Database;
 import com.mosun.saveredis.util.*;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -38,13 +39,24 @@ public class MainProc {
 	private static Socket socket=null;
 	private static RedisInputStream ris;
 	private static RedisOutputStream ros;
-	
+	public static Database DATABASE ;
+	static{
+		DATABASE = new Database(RedisConfig.getLevelDBFileName(), null);
+		try {
+			DATABASE.init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			DATABASE.close();
+			DATABASE = null;
+		}
+	}
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		System.out.println( "Hello World!" );
+		System.out.println( "Starting now..." );
 		Runtime.getRuntime().addShutdownHook(new Thread(){
     		public void run(){
     			workerGroup.shutdownGracefully();

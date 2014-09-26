@@ -29,28 +29,11 @@ public class Database {
 	private String filename = "";
 	private boolean initialized = false;
 	private Options options;
-	private static Database instance = null;
-	public static Database getInstance(){
-		if (instance==null){
-			synchronized (Database.class) {
-				if (instance==null){
-					instance = new Database(RedisConfig.getLevelDBFileName(), null);
-					try {
-						instance.init();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		return instance;
-	}
-	private Database(String _filename,Options _options) {
+	public Database(String _filename,Options _options) {
 		this.filename = _filename;
 		options = _options;
 	}
-	private void init() throws IOException{
+	public void init() throws IOException{
 		if (this.options==null){
 			this.options = new Options();
 			this.options.createIfMissing(true);
@@ -97,7 +80,6 @@ public class Database {
 		db.delete(byteKey);
 	}
 	public void close(){
-		synchronized (Database.class) {
 			try {
 				if (db!=null){
 					db.close();
@@ -109,8 +91,6 @@ public class Database {
 			}finally{
 				db = null;
 			}
-			instance = null;
-		}
 		
 	}
 	public DBIterator iterator(ReadOptions ro){

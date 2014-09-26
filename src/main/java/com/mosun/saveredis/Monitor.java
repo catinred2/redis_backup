@@ -46,7 +46,7 @@ public class Monitor implements Runnable{
 			}
 			else{
 				List<String> response = BuilderFactory.STRING_LIST.build(obj);
-				String key = response.get(3);//NetworkStatics
+				String key = response.get(3);
 				if (key.startsWith("NetworkStatics")){
 					continue;
 				}

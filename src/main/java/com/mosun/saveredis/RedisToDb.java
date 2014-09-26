@@ -89,9 +89,9 @@ public class RedisToDb implements Runnable{
 				if (value!=null && !value.isEmpty()){
 					// save to db
 					//count++;
-					logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type, value));
+					//logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type, value));
 					//take_time = System.currentTimeMillis();
-					Database.getInstance().write(key, valueTypeString + value);
+					MainProc.DATABASE.write(key, valueTypeString + value);
 //					finish_time = System.currentTimeMillis();
 //					total_time = total_time + finish_time - take_time;
 //					if (count==10000){
@@ -100,8 +100,7 @@ public class RedisToDb implements Runnable{
 				}else{
 					//delete from db??
 					if (type.equals("none")){
-						logger.debug(String.format("DELETE key=%s",key));
-						Database.getInstance().del(key);
+						MainProc.DATABASE.del(key);
 					}
 				}
 				
@@ -113,7 +112,7 @@ public class RedisToDb implements Runnable{
 			
 		}
 		logger.debug("ok,quit now.");
-		Database.getInstance().close();
+		MainProc.DATABASE.close();
 		
 		j.close();
 		j=null;

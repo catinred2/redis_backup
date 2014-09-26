@@ -14,6 +14,7 @@ import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.ReadOptions;
 import org.iq80.leveldb.util.DbIterator;
 
+import com.mosun.saveredis.MainProc;
 import com.mosun.saveredis.RedisConfig;
 import com.mosun.saveredis.util.JsonUtil;
 
@@ -29,7 +30,7 @@ public class DatabaseTest {
 	public static void showDatabase() {
 		ReadOptions ro = new ReadOptions();
 		int count = 0;
-		DBIterator it = Database.getInstance().iterator(ro);
+		DBIterator it = MainProc.DATABASE.iterator(ro);
 		while (it.hasNext()) {
 			count++;
 			Entry<byte[], byte[]> entry = it.next();
@@ -38,7 +39,7 @@ public class DatabaseTest {
 			System.out.println("key=" + new String(byteKey, StandardCharsets.UTF_8) + "\r\nvalue="
 					+ new String(byteValue, StandardCharsets.UTF_8));
 		}
-		Database.getInstance().close();
+		MainProc.DATABASE.close();
 		System.out.println("total=" + count);
 
 	}
@@ -47,10 +48,10 @@ public class DatabaseTest {
 		// keepInserting();
 		// showDatabase();
 		// query();
-		Test tp = new Test("1", (double) 2);
-		String value = JsonUtil.getInstance().writeValue(tp);
-		System.out.println(value);
-
+//		Test tp = new Test("1", (double) 2);
+//		String value = JsonUtil.getInstance().writeValue(tp);
+//		System.out.println(value);
+		
 	}
 
 	public static void keepInserting() {

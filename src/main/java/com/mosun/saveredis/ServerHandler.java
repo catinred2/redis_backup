@@ -4,6 +4,8 @@
 package com.mosun.saveredis;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.iq80.leveldb.DB;
@@ -14,6 +16,8 @@ import org.iq80.leveldb.util.DbIterator;
 
 import com.mosun.saveredis.leveldb.Database;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -41,33 +45,68 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 		String response = "";
 		switch(cmd.toUpperCase()){
 		case "KEYS":
-			DBIterator it = Database.getInstance().iterator(new ReadOptions());
+			if (args.length!=2){
+				response = "usage: keys abc*d\r\n";
+				break;
+			}
+			String param = args[1];
+			if (param==null || param.isEmpty()){
+				response = "usage: keys abc*d\r\n";
+				break;
+			}
+			Pattern p = null;
+			if (param.indexOf('*')==-1){
+				
+			}else{
+				p = Pattern.compile(param);
+			}
+			
+			DBIterator it = MainProc.DATABASE.iterator(new ReadOptions());
 			StringBuilder sb = new StringBuilder();
+			Matcher matcher = null;
 			while(it.hasNext()){
-				sb.append(new String(it.next().getKey()));
-				sb.append("\r\n");
+				String key = new String(it.next().getKey());
+				key = key.substring(1);
+				if (p!=null){
+					matcher = p.matcher(key);
+					if (matcher.find()){
+						sb.append(key);
+						sb.append("\r\n");
+					}
+				}
+				else{
+					if (key.equals(param)){
+						sb.append(key);
+						sb.append("\r\n");
+					}
+				}
+				
 			}
 			response = sb.toString();
+			if (response==null || response.isEmpty()){
+				response = "No such key\r\n";
+			}
 			sb.setLength(0);
 			break;
 		case "GET":
 			if (args.length==2){
 				String key = args[1];
-				String value = Database.getInstance().read(key);
+				String value = MainProc.DATABASE.read(key);
 				if (value==null || value.isEmpty()){
-					response = "EMPTY KEY OR LIST\r\n";
+					response = "-EMPTY KEY OR LIST\r\n";
 				}else{
 					String valueType= value.substring(0, 1);
 					response = "type="+ valueType + " "+ value.substring(1)  + "\r\n";
 				}
 				
 			}else{
-				response = "PLEASE PROVIDE THE KEY\r\n";
+				response = "-PLEASE PROVIDE THE KEY\r\n";
 			}
 			
 			break;
 		case "EXIT":
-			ctx.channel().close();
+			ChannelFuture cf = ctx.channel().writeAndFlush("Exit...\r\n");
+			cf.addListener(ChannelFutureListener.CLOSE);
 			return;
 		default:
 			response = "-ERROR COMMAND ERROR\r\n";

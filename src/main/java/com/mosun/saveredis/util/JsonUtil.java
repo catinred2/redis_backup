@@ -96,11 +96,7 @@ public class JsonUtil<T, ID extends Serializable> {
 		
 		if (value != null && !value.trim().equals("")) {
 			try {
-				long before = System.currentTimeMillis();
 				 T ret = mapper.readValue(value, Object);
-				 long after = System.currentTimeMillis();
-				 long gap = after - before;
-				 logger.info(gap+"$$$read$$$"+cutString(value,40)+"$$$"+getCaller());
 				 return ret;
 				
 			} catch (JsonParseException e) {
@@ -117,11 +113,7 @@ public class JsonUtil<T, ID extends Serializable> {
 	public <T> T readValue(String value, TypeReference<T> Object) {
 		if (value != null && !value.trim().equals("")) {
 			try {
-				long before = System.currentTimeMillis();
 				T ret = mapper.readValue(value, Object);
-				long after = System.currentTimeMillis();
-				 long gap = after - before;
-				 logger.info(gap+"$$$read$$$"+cutString(value,40)+"$$$"+getCaller());
 				return ret;
 			} catch (JsonParseException e) {
 				e.printStackTrace();
@@ -141,11 +133,7 @@ public class JsonUtil<T, ID extends Serializable> {
 //		StringWriter sw = new StringWriter();
 		try {
 //			mapper.writeValue(sw, object);
-			long before = System.currentTimeMillis();
 			String ret = mapper.writeValueAsString(object);
-			long after = System.currentTimeMillis();
-			long gap = after - before;
-			logger.info(gap+"$$$read$$$"+cutString(ret,40)+"$$$"+getCaller());
 			return ret;
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
