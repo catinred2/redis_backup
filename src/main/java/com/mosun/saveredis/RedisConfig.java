@@ -4,6 +4,7 @@
 package com.mosun.saveredis;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 /**
  * @Description: TODO
@@ -28,7 +29,9 @@ public class RedisConfig {
 		if (this.appSettings==null){
 			this.appSettings = new Properties();
 			try {
-				this.appSettings.load(getClass().getResourceAsStream("/config.properties"));
+				//this.appSettings.load(getClass().getResourceAsStream("/config.properties"));
+				InputStream in =this.getClass().getClassLoader().getResourceAsStream("conf/config.properties");
+                this.appSettings.load(in);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -45,5 +48,8 @@ public class RedisConfig {
 	}
 	public static String getLevelDBFileName(){
 		return getConfigProperty("leveldb.filename");
+	}
+	public static int getSystemPort(){
+		return Integer.parseInt(getConfigProperty("system.port"));
 	}
 }

@@ -2,7 +2,9 @@ LICENSE
 .classpath
 .project
 .settings
+.settings/*
 /logs
 /test.db
 /target
 leveldb.db
+lib

@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import com.mosun.saveredis.leveldb.Database;
 import com.mosun.saveredis.util.*;
@@ -57,6 +58,11 @@ public class MainProc {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println( "Starting now..." );
+		String path = MainProc.class.getClassLoader().getResource("").getPath();
+        path = path + "conf/log4j.xml";
+        System.out.println( "configuring log4j.xml at " + path );
+        DOMConfigurator.configure(path);
+        
 		Runtime.getRuntime().addShutdownHook(new Thread(){
     		public void run(){
     			workerGroup.shutdownGracefully();
@@ -107,19 +113,25 @@ public class MainProc {
 		
 	}
 	public static void socketInit() throws UnknownHostException, IOException{
+		System.out.println("connecting redis...");
 		socket = new Socket(RedisConfig.getHost(),RedisConfig.getPort());
 		ris = new RedisInputStream(socket.getInputStream());
 		ros = new RedisOutputStream(socket.getOutputStream());
 		ros.writeAsciiCrLf("config set notify-keyspace-events EA");
 		ros.flush();
 		String ok = ris.readLine();
-		System.out.println(ok);
+		if (!"+OK".equals(ok)){
+			System.out.println("REDIS ERROR:" + ok);
+			System.exit(-1);
+		}
+		System.out.println("redis connected.");
 		ros.writeAsciiCrLf("psubscribe __keyevent@0__:*");
 		ros.flush();
 		
 		//socket.close();
 	}
 	public static void networkInit(){
+		port = RedisConfig.getSystemPort();
 		bossGroup = new NioEventLoopGroup();
         workerGroup = new NioEventLoopGroup();
         try {

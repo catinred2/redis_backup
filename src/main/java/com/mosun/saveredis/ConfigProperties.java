@@ -1,6 +1,7 @@
 package com.mosun.saveredis;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -57,8 +58,8 @@ public class ConfigProperties {
 			//如果没有缓存
 			this.appSettings = new Properties();
 			try {
-				this.appSettings.load(getClass().getResourceAsStream("/config.properties"));
-				
+				InputStream in =this.getClass().getClassLoader().getResourceAsStream("conf/config.properties");
+                this.appSettings.load(in);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -66,10 +67,7 @@ public class ConfigProperties {
 	}
 	
 	public static void main(String[] args) {
-		int[][] list=new int[1][2];
-		list[0][1]=1;
-		list[0][0]=2;
-		//System.out.println( jsonArray.toString() );   
-		//System.out.println(test);
+		 
+		System.out.println(ConfigProperties.getConfigProperty("redis.port"));
 	}
 }
