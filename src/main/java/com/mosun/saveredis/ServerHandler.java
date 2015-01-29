@@ -44,6 +44,14 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 		String cmd = args[0];
 		String response = "";
 		switch(cmd.toUpperCase()){
+		case "SHUTDOWN":
+			KeyQueue.Put(KeyQueue.MAGIC_WORD);
+			Thread.sleep(3000);
+			System.exit(0);
+			break;
+		case "SAVE":
+			KeyQueue.Put(KeyQueue.HOTCOPY);
+			break;
 		case "KEYS":
 			if (args.length!=2){
 				response = "usage: keys abc*d\r\n";
@@ -96,7 +104,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 					response = "-EMPTY KEY OR LIST\r\n";
 				}else{
 					String valueType= value.substring(0, 1);
-					response = "type="+ valueType + " "+ value.substring(1)  + "\r\n";
+					response = "type="+ valueType + "\r\n"+ value.substring(1)  + "\r\n";
 				}
 				
 			}else{

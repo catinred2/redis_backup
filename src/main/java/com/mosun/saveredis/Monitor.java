@@ -50,14 +50,8 @@ public class Monitor implements Runnable{
 				if (key.startsWith("NetworkStatics")){
 					continue;
 				}
-				try {
-					//logger.debug("put queue:" + System.currentTimeMillis());
-					KeyQueue.Put(response.get(3));
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
-				}
+				KeyQueue.Put(response.get(3));
+				
 			}
 		}
 		

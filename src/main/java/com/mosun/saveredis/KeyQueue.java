@@ -12,11 +12,23 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class KeyQueue {
 	private static LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
-	public final static String MAGIC_WORD = "NEED_QUIT";
-	public static void Put(String str) throws InterruptedException{
-		queue.put(str);
+	public final static String MAGIC_WORD = "__NEED_QUIT";
+	public final static String HOTCOPY = "__HOT_COPY";
+	public static void Put(String str) {
+		try {
+			queue.put(str);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	public static String Take() throws InterruptedException{
-		return queue.take();
+	public static String Take() {
+		try {
+			return queue.take();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

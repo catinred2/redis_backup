@@ -75,14 +75,8 @@ public class MainProc {
 					e1.printStackTrace();
 				}
     			
+    			KeyQueue.Put(KeyQueue.MAGIC_WORD);
     			
-    			try {
-					KeyQueue.Put(KeyQueue.MAGIC_WORD);
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
     			try {
 					Thread.sleep(3000);
 				} catch (InterruptedException e) {

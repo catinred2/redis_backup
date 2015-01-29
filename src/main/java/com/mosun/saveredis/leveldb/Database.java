@@ -6,6 +6,12 @@ package com.mosun.saveredis.leveldb;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBFactory;
@@ -15,6 +21,7 @@ import org.iq80.leveldb.ReadOptions;
 import org.iq80.leveldb.impl.Iq80DBFactory;
 import org.iq80.leveldb.impl.Level;
 import org.iq80.leveldb.util.DbIterator;
+import org.iq80.leveldb.util.FileUtils;
 
 import com.mosun.saveredis.RedisConfig;
 
@@ -29,9 +36,18 @@ public class Database {
 	private String filename = "";
 	private boolean initialized = false;
 	private Options options;
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 	public Database(String _filename,Options _options) {
 		this.filename = _filename;
 		options = _options;
+	}
+	public boolean hotCopy(String target){
+		
+			return FileUtils.copyDirectoryContents(Paths.get(this.filename).toFile(), Paths.get(target).toFile());
+			
+	}
+	public static String GenBackupName(){
+		return sdf.format(Calendar.getInstance().getTime());
 	}
 	public void init() throws IOException{
 		if (this.options==null){

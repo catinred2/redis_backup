@@ -31,96 +31,114 @@ import com.mosun.saveredis.util.Protocol.Command;
  * @author ming
  * @date 2014年8月14日 下午2:50:43
  */
-public class RedisToDb implements Runnable{
+public class RedisToDb implements Runnable {
 	private boolean flag = true;
-	private static final Logger logger=Logger.getLogger(RedisToDb.class);
+	private static final Logger logger = Logger.getLogger(RedisToDb.class);
 	Socket socket;
 	RedisInputStream ris;
 	RedisOutputStream ros;
-	public RedisToDb(){
-		
+
+	public RedisToDb() {
+
+	}
+	public static void backup(){
+		logger.debug("starting backup");
+		MainProc.DATABASE.close();
+		String name = Database.GenBackupName();
+		if (MainProc.DATABASE.hotCopy(name)){
+			logger.debug("backup to "+name+" done");
+		}
+		else{
+			logger.debug("backup to "+name+" fails");
+		}
+		try {
+			MainProc.DATABASE.init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
-	public void run(){
-		Jedis j = new Jedis(RedisConfig.getHost(),RedisConfig.getPort());
+	public void run() {
+		Jedis j = new Jedis(RedisConfig.getHost(), RedisConfig.getPort());
 		String value = null;
-		long take_time,finish_time,total_time=0;
-		int count=0;
-		
-		
-		while(flag){
+		long take_time, finish_time, total_time = 0;
+		int count = 0;
+
+		while (flag) {
 			String key;
-			String valueTypeString="";
-			try {
-				key = KeyQueue.Take();
-				if (KeyQueue.MAGIC_WORD.equals(key)){
-					break;
-				}
-				String type = j.type(key);
-				switch (type){
-				case "string":
-					value = j.get(key);
-					valueTypeString = "S";
-					break;
-				case "hash":
-					Map<String, String> hashMap = j.hgetAll(key);
-					value = JsonUtil.getInstance().writeValue(hashMap);
-					valueTypeString = "H";
-					break;
-				case "list":
-					List<String> list = j.lrange(key, 0, -1);
-					value = JsonUtil.getInstance().writeValue(list);
-					valueTypeString = "L";
-					break;
-				case "zset":
-					Set<Tuple> zset = j.zrangeWithScores(key, 0, -1);
-					value = JsonUtil.getInstance().writeValue(zset);
-					valueTypeString = "Z";
-					break;
-				case "set":
-					Set<String> set = j.smembers(key);
-					value = JsonUtil.getInstance().writeValue(set);
-					valueTypeString = "T";
-					break;
-				default:
-					value=null;
-					break;
-				}
-				if (value!=null && !value.isEmpty()){
-					// save to db
-					//count++;
-					//logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type, value));
-					//take_time = System.currentTimeMillis();
-					MainProc.DATABASE.write(key, valueTypeString + value);
-//					finish_time = System.currentTimeMillis();
-//					total_time = total_time + finish_time - take_time;
-//					if (count==10000){
-//						logger.debug("=============time=" + total_time);
-//					}
-				}else{
-					//delete from db??
-					if (type.equals("none")){
-						MainProc.DATABASE.del(key);
-					}
-				}
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				
+			String valueTypeString = "";
+			key = KeyQueue.Take();
+			if (key==null){
+				continue;
 			}
-			
+			if (KeyQueue.MAGIC_WORD.equals(key)) {
+				break;
+			}
+			if (KeyQueue.HOTCOPY.equals(key)) {
+				backup();
+			}
+			String type = j.type(key);
+			switch (type) {
+			case "string":
+				value = j.get(key);
+				valueTypeString = "S";
+				break;
+			case "hash":
+				Map<String, String> hashMap = j.hgetAll(key);
+				value = JsonUtil.getInstance().writeValue(hashMap);
+				valueTypeString = "H";
+				break;
+			case "list":
+				List<String> list = j.lrange(key, 0, -1);
+				value = JsonUtil.getInstance().writeValue(list);
+				valueTypeString = "L";
+				break;
+			case "zset":
+				Set<Tuple> zset = j.zrangeWithScores(key, 0, -1);
+				value = JsonUtil.getInstance().writeValue(zset);
+				valueTypeString = "Z";
+				break;
+			case "set":
+				Set<String> set = j.smembers(key);
+				value = JsonUtil.getInstance().writeValue(set);
+				valueTypeString = "T";
+				break;
+			default:
+				value = null;
+				break;
+			}
+			if (value != null && !value.isEmpty()) {
+				// save to db
+				// count++;
+				// logger.debug(String.format("key=%s type=%s\r\nvalue=%s",key,type,
+				// value));
+				// take_time = System.currentTimeMillis();
+				MainProc.DATABASE.write(key, valueTypeString + value);
+				// finish_time = System.currentTimeMillis();
+				// total_time = total_time + finish_time - take_time;
+				// if (count==10000){
+				// logger.debug("=============time=" + total_time);
+				// }
+			}
+			else {
+				// delete from db??
+				if (type.equals("none")) {
+					MainProc.DATABASE.del(key);
+				}
+			}
+
 		}
 		logger.debug("ok,quit now.");
 		MainProc.DATABASE.close();
-		
+
 		j.close();
-		j=null;
+		j = null;
 	}
-	
+
 	public void run1() {
 		try {
-			socket = new Socket(RedisConfig.getHost(),RedisConfig.getPort());
+			socket = new Socket(RedisConfig.getHost(), RedisConfig.getPort());
 			ris = new RedisInputStream(socket.getInputStream());
 			ros = new RedisOutputStream(socket.getOutputStream());
 		} catch (UnknownHostException e1) {
@@ -133,17 +151,18 @@ public class RedisToDb implements Runnable{
 			return;
 		}
 		String value = null;
-		long take_time,finish_time;
-		while(true){
+		long take_time, finish_time;
+		while (true) {
 			try {
 				String key = KeyQueue.Take();
 				ros.write(SafeEncoder.encode("type " + key));
 				ros.writeCrLf();
 				ros.flush();
 				String type = BuilderFactory.STRING.build(Protocol.read(ris));
-				switch (type){
+				switch (type) {
 				case "string":
-					//Protocol.sendCommand(ros, Command.GET, SafeEncoder.encode("get " + key));
+					// Protocol.sendCommand(ros, Command.GET,
+					// SafeEncoder.encode("get " + key));
 					ros.write(SafeEncoder.encode("get " + key));
 					ros.writeCrLf();
 					ros.flush();
@@ -153,7 +172,7 @@ public class RedisToDb implements Runnable{
 					ros.write(SafeEncoder.encode("hgetall " + key));
 					ros.writeCrLf();
 					ros.flush();
-					
+
 					break;
 				case "list":
 					break;
@@ -164,10 +183,7 @@ public class RedisToDb implements Runnable{
 				default:
 					break;
 				}
-				logger.debug("read from redis:value="+value);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.debug("read from redis:value=" + value);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
