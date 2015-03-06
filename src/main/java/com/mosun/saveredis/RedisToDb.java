@@ -6,6 +6,7 @@ package com.mosun.saveredis;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -24,6 +25,7 @@ import com.mosun.saveredis.util.Protocol;
 import com.mosun.saveredis.util.RedisInputStream;
 import com.mosun.saveredis.util.RedisOutputStream;
 import com.mosun.saveredis.util.SafeEncoder;
+import com.mosun.saveredis.util.ZsetItem;
 import com.mosun.saveredis.util.Protocol.Command;
 
 /**
@@ -77,6 +79,7 @@ public class RedisToDb implements Runnable {
 			}
 			if (KeyQueue.HOTCOPY.equals(key)) {
 				backup();
+				continue;
 			}
 			String type = j.type(key);
 			switch (type) {
@@ -96,7 +99,19 @@ public class RedisToDb implements Runnable {
 				break;
 			case "zset":
 				Set<Tuple> zset = j.zrangeWithScores(key, 0, -1);
-				value = JsonUtil.getInstance().writeValue(zset);
+				int size = zset.size();
+				if (size<=0){
+					value = null;
+					break;
+				}
+				ArrayList<ZsetItem> arrayList = new ArrayList<ZsetItem>(size);
+				for(Tuple t:zset){
+					ZsetItem item = new ZsetItem();
+					item.setElement(t.getElement());
+					item.setScore(t.getScore());
+					arrayList.add(item);
+				}
+				value = JsonUtil.getInstance().writeValue(arrayList);
 				valueTypeString = "Z";
 				break;
 			case "set":

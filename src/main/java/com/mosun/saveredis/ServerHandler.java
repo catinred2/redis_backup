@@ -34,7 +34,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 	 */
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-		logger.debug("--------------------");
+		//logger.debug("--------------------");
 		// TODO Auto-generated method stub
 		if (msg==null || msg.isEmpty()){
 			ctx.channel().writeAndFlush("-ERROR KEY IS NULL OR EMPTY\r\n");
@@ -50,45 +50,28 @@ public class ServerHandler extends SimpleChannelInboundHandler<String>{
 			System.exit(0);
 			break;
 		case "SAVE":
+			response="begin to backup...";
 			KeyQueue.Put(KeyQueue.HOTCOPY);
 			break;
 		case "KEYS":
 			if (args.length!=2){
-				response = "usage: keys abc*d\r\n";
+				response = "usage: keys abc\r\n";
 				break;
 			}
 			String param = args[1];
 			if (param==null || param.isEmpty()){
-				response = "usage: keys abc*d\r\n";
+				response = "usage: keys abc\r\n";
 				break;
 			}
-			Pattern p = null;
-			if (param.indexOf('*')==-1){
-				
-			}else{
-				p = Pattern.compile(param);
-			}
-			
 			DBIterator it = MainProc.DATABASE.iterator(new ReadOptions());
 			StringBuilder sb = new StringBuilder();
-			Matcher matcher = null;
 			while(it.hasNext()){
 				String key = new String(it.next().getKey());
 				key = key.substring(1);
-				if (p!=null){
-					matcher = p.matcher(key);
-					if (matcher.find()){
-						sb.append(key);
-						sb.append("\r\n");
-					}
+				if (key.equals(param)) {
+					sb.append(key);
+					sb.append("\r\n");
 				}
-				else{
-					if (key.equals(param)){
-						sb.append(key);
-						sb.append("\r\n");
-					}
-				}
-				
 			}
 			response = sb.toString();
 			if (response==null || response.isEmpty()){
