@@ -1,9 +1,6 @@
 package com.mosun.saveredis;
 
-import java.awt.List;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -14,9 +11,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.ReadOptions;
 
-import com.google.common.base.Strings;
 import com.mosun.saveredis.util.JsonUtil;
-import com.mosun.saveredis.util.Tuple;
 import com.mosun.saveredis.util.ZsetItem;
 
 import redis.clients.jedis.Jedis;
@@ -76,7 +71,7 @@ public class Restore {
 				break;
 			case "Z"://zset
 				j.del(key);
-				ArrayList<ZsetItem> zset = (ArrayList)JsonUtil.getInstance().readValue(value, new TypeReference<ArrayList<ZsetItem>>() {
+				ArrayList<ZsetItem> zset = (ArrayList<ZsetItem>)JsonUtil.getInstance().readValue(value, new TypeReference<ArrayList<ZsetItem>>() {
 				});
 				
 				//Set<Tuple> zset = (Set<Tuple>)JsonUtil.getInstance().readValue(value, Set.class);
